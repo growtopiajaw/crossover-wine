@@ -32,7 +32,7 @@ jobs:
         run: |
           cd sources/clang/llvm/build/bin
           export PATH="$(pwd):$PATH"
-          cd ~/sources/clang/clang
+          cd ../../../../clang/clang
           mkdir build
           cd build
           cmake ../
@@ -42,7 +42,7 @@ jobs:
         run: |
           cd sources/clang/clang/build/bin
           export PATH="$(pwd):$PATH"
-          cd ~/sources/wine
+          cd ../../../../wine
           export PATH="$(pwd):$PATH"
           mkdir crossover
           ./configure --prefix="$(pwd)/crossover" --enable-win32on64 -disable-winedbg --without-x --without-vulkan --disable-mscms
