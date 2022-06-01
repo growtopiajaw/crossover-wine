@@ -15,7 +15,6 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get upgrade -y
           sudo apt-get install libxml2-dev libpkgconfig-perl flex cmake cmake libfreetype6-dev build-essential gawk gcc-multilib git gettext libncurses5-dev libssl-dev python3-distutils zlib1g-dev ccache ecj fastjar file g++ java-propose-classpath libelf-dev libncursesw5-dev python python2.7-dev python3 unzip wget python-distutils-extra python3-setuptools python3-dev rsync subversion swig time xsltproc -y
 
       - name: Compile llvm
@@ -44,6 +43,7 @@ jobs:
 
       - name: Compile wine
         run: |
+          cd sources
           cd wine
           export PATH="$(pwd):$PATH"
           mkdir crossover
