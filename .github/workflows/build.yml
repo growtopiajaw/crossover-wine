@@ -1,0 +1,62 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get upgrade -y
+          sudo apt-get install libxml2-dev libpkgconfig-perl flex cmake cmake libfreetype6-dev build-essential gawk gcc-multilib git gettext libncurses5-dev libssl-dev python3-distutils zlib1g-dev ccache ecj fastjar file g++ java-propose-classpath libelf-dev libncursesw5-dev python python2.7-dev python3 unzip wget python-distutils-extra python3-setuptools python3-dev rsync subversion swig time xsltproc -y
+
+      - name: Compile llvm
+        run: |
+          curl -LO https://media.codeweavers.com/pub/crossover/source/crossover-sources-21.2.0.tar.gz
+          tar xvf crossover-sources-21.2.0.tar.gz
+          cd sources
+          cd clang/llvm
+          mkdir build
+          cd build
+          cmake ../
+          make
+          cd bin
+          export PATH="$(pwd):$PATH"
+
+      - name: Compile clang
+        run: |
+          cd sources
+          cd clang/clang
+          mkdir build
+          cd build
+          cmake ../
+          make
+          cd bin
+          export PATH="$(pwd):$PATH"
+
+      - name: Compile wine
+        run: |
+          cd wine
+          export PATH="$(pwd):$PATH"
+          mkdir crossover
+          ./configure --prefix="$(pwd)/crossover" --enable-win32on64 -disable-winedbg --without-x --without-vulkan --disable-mscms
+          make
+          tar cvf ~/crossover.tar crossover
+          cd ~/
+          xz -z9ev crossover.tar
+
+      - name: Upload release
+        uses: svenstaro/upload-release-action@2.2.1
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: crossover.tar.xz
+          tag: v1.0
+          file_glob: true
