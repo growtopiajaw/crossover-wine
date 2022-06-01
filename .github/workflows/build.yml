@@ -27,24 +27,22 @@ jobs:
           cd build
           cmake ../
           make
-          cd bin
-          export PATH="$(pwd):$PATH"
 
       - name: Compile clang
         run: |
-          cd sources
-          cd clang/clang
+          cd sources/clang/llvm/build/bin
+          export PATH="$(pwd):$PATH"
+          cd ~/sources/clang/clang
           mkdir build
           cd build
           cmake ../
           make
-          cd bin
-          export PATH="$(pwd):$PATH"
 
       - name: Compile wine
         run: |
-          cd sources
-          cd wine
+          cd sources/clang/clang/build/bin
+          export PATH="$(pwd):$PATH"
+          cd ~/sources/wine
           export PATH="$(pwd):$PATH"
           mkdir crossover
           ./configure --prefix="$(pwd)/crossover" --enable-win32on64 -disable-winedbg --without-x --without-vulkan --disable-mscms
